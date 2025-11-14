@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vòng Quay Tên</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="wheel-title">Vòng Quay Tên</h1>
+            <p class="subtitle" id="wheel-description">Công cụ chọn tên ngẫu nhiên công bằng</p>
+            <div class="header-buttons">
+                <button id="edit-title-btn" class="edit-btn">Chỉnh sửa tiêu đề</button>
+                <button id="export-btn" class="edit-btn">Xuất kết quả</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Bên trái: Vòng quay -->
+            <div class="left-panel">
+                <div class="wheel-container">
+                    <div class="wheel-wrapper">
+                        <div class="pointer"></div>
+                        <svg id="wheel" viewBox="0 0 500 500">
+                            <!-- Các phần của vòng quay sẽ được tạo ở đây -->
+                        </svg>
+                        <div class="wheel-center">
+                            <button id="spin-btn">QUAY</button>
+                        </div>
+                        
+                        <!-- KẾT QUẢ HIỂN THỊ TRONG VÒNG QUAY -->
+                        <div class="wheel-result" id="wheel-result" style="display: none;">
+                            <div class="result-overlay">
+                                <div class="result-content">
+                                    <h3>Chúng ta đã có người chiến thắng!</h3>
+                                    <div id="result" class="winner-name">-</div>
+                                    <div class="result-buttons">
+                                        <button id="close-btn" class="close-btn">Đóng</button>
+                                        <button id="move-btn" class="move-btn">Di dời</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- NÚT TĂNG CƠ HỘI Ở GÓC PHẢI VÒNG QUAY -->
+                    <div class="cheat-corner">
+                        <button id="cheat-btn" class="cheat-btn-corner" title="Tăng cơ hội trúng thưởng">
+                            <span class="cheat-icon">🎯</span>
+                        </button>
+                    </div>
+                    
+                    <div class="stats-controls">
+                        <div class="stats">
+                            <span class="stat-item">Các mục nhập: <span id="entries-count">0</span></span>
+                            <span class="stat-item">Kết quả: <span id="results-count">0</span></span>
+                            <span class="stat-item">Trốn: <span id="escape-count">0</span></span>
+                        </div>
+                        <div class="controls">
+                            <button id="reset-btn">Đặt Lại</button>
+                            <button id="clear-list-btn">Xóa danh sách</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bên phải: Các mục và kết quả -->
+            <div class="right-panel">
+                <div class="input-section">
+                    <h2>Thêm Tên</h2>
+                    <div class="input-group">
+                        <label for="name-input">Thêm từng tên</label>
+                        <div class="input-with-button">
+                            <input type="text" id="name-input" placeholder="Nhập tên">
+                            <button id="add-btn">Thêm</button>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="names-textarea">Thêm nhiều tên (mỗi dòng một tên)</label>
+                        <textarea id="names-textarea" placeholder="Nhập các tên, mỗi tên một dòng"></textarea>
+                    </div>
+                    <div class="names-list-container">
+                        <div class="list-header">
+                            <h3>Danh sách tên</h3>
+                            <span class="list-count">(<span id="list-count">0</span> tên)</span>
+                        </div>
+                        <div class="names-list" id="names-list">
+                            <!-- Danh sách tên sẽ hiển thị ở đây -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phần kết quả gần đây -->
+                <div class="result-section">
+                    <div class="result-header">
+                        <h2>Kết quả gần đây</h2>
+                    </div>
+                    <div class="recent-results" id="recent-results">
+                        <!-- Kết quả sẽ được thêm vào đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal chỉnh sửa tiêu đề -->
+        <div class="modal" id="edit-modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Chỉnh sửa tiêu đề và mô tả</h3>
+                <div class="input-group">
+                    <label for="edit-title-input">Tiêu đề bánh xe</label>
+                    <input type="text" id="edit-title-input" placeholder="Nhập tiêu đề">
+                </div>
+                <div class="input-group">
+                    <label for="edit-description-input">Mô tả bánh xe</label>
+                    <input type="text" id="edit-description-input" placeholder="Nhập mô tả">
+                </div>
+                <div class="modal-buttons">
+                    <button id="cancel-edit-btn" class="cancel-btn">Hủy bỏ</button>
+                    <button id="save-edit-btn" class="save-btn">Lưu thay đổi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal chọn tên gian lận -->
+        <div class="modal" id="cheat-modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Tăng cơ hội trúng thưởng</h3>
+                <div class="cheat-info">
+                    <p>Chọn người bạn muốn tăng cơ hội trúng thưởng:</p>
+                </div>
+                <div class="input-group">
+                    <label for="cheat-select">Chọn người chiến thắng</label>
+                    <select id="cheat-select" class="cheat-select">
+                        <option value="">-- Chọn tên --</option>
+                    </select>
+                </div>
+                <div class="cheat-warning">
+                    <p>⚠️ Tính năng này chỉ dành cho mục đích giải trí!</p>
+                </div>
+                <div class="modal-buttons">
+                    <button id="cancel-cheat-btn" class="cancel-btn">Hủy bỏ</button>
+                    <button id="confirm-cheat-btn" class="cheat-confirm-btn">Tiếp tục</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Vòng Quay Tên &copy; <span id="current-year"></span> | Cách công bằng để chọn ngẫu nhiên</p>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
